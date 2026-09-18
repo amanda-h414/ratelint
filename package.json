@@ -1,0 +1,17 @@
+{
+  "name": "ratelint",
+  "version": "0.1.0",
+  "description": "A static linter that flags common rate-limiting bugs in TypeScript and JavaScript source.",
+  "type": "module",
+  "bin": {
+    "ratelint": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.5.0"
+  }
+}
