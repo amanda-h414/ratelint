@@ -148,9 +148,20 @@ export const rules: Rule[] = [
   zeroFloorJitter,
 ];
 
-export function lint(source: string): Finding[] {
+// Per-rule overrides keyed by rule id. A rule with no entry keeps its
+// built-in severity; "off" skips it entirely.
+export type RuleSettings = Record<string, Severity | "off">;
+
+export function lint(source: string, settings: RuleSettings = {}): Finding[] {
   const lines = source.split(/\r\n|\r|\n/);
-  const findings = rules.flatMap((rule) => rule.check(lines, source));
+  const findings = rules.flatMap((rule) => {
+    const setting = settings[rule.id];
+    if (setting === "off") return [];
+    const found = rule.check(lines, source);
+    return setting === undefined
+      ? found
+      : found.map((f) => ({ ...f, severity: setting }));
+  });
   findings.sort((a, b) => a.line - b.line || a.ruleId.localeCompare(b.ruleId));
   return findings;
 }

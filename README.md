@@ -12,8 +12,7 @@ type errors or style violations — they're domain-specific mistakes.
 
 ratelint reads a file, checks it against a small set of rules, and prints
 findings as `file:line: message [rule-id]`, the same shape as any other
-linter output. It has no configuration file yet and no autofix. It just
-tells you where to look.
+linter output. It has no autofix. It just tells you where to look.
 
 ## Usage
 
@@ -31,6 +30,25 @@ src/limiter.ts:27: warning retryAfter is computed by subtraction with no clamp t
 
 Exit code is `1` if any file produced findings (or couldn't be read), `0`
 otherwise, so it can be dropped into a CI step.
+
+## Configuration
+
+ratelint reads `ratelint.json` from the working directory if it exists, or
+the file given with `--config <file>`. Each rule can be turned off or have
+its severity changed:
+
+```json
+{
+  "rules": {
+    "rate-limit-zero-jitter": "off",
+    "rate-limit-off-by-one": "error"
+  }
+}
+```
+
+Levels are `off`, `warning` and `error`. Unknown rule ids and invalid levels
+are reported as errors (exit code 2) so a typo doesn't leave a rule
+silently enabled.
 
 ## Rules
 
